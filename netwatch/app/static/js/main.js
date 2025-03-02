@@ -5,9 +5,7 @@ const socket = io({
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    secure: true,
-    rejectUnauthorized: false
+    reconnectionDelayMax: 5000
 });
 
 let packetChart, trafficChart;

@@ -1,11 +1,11 @@
-from app import create_app, socketio
-import os
+from app import create_app
+from os import environ
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = create_app()
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    socketio.run(app, 
-                host='0.0.0.0',
-                port=port,
-                debug=os.environ.get('FLASK_ENV') != 'production') 
+    port = int(environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port) 

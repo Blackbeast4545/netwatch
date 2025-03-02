@@ -1,22 +1,18 @@
 from flask import Flask
 from flask_socketio import SocketIO
 from flask_login import LoginManager
-import os
-import logging
-from logging.handlers import RotatingFileHandler
 
-socketio = SocketIO(cors_allowed_origins="*")
+socketio = SocketIO(cors_allowed_origins="*")  # Allow all origins for development
 login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '1234567891')
+    app.config['SECRET_KEY'] = '1234567891'
+    app.config['DEBUG'] = False  # Disable debug mode
+    app.config['PROPAGATE_EXCEPTIONS'] = True
     
-    # Configure for production
-    if os.environ.get('FLASK_ENV') == 'production':
-        app.config['SESSION_COOKIE_SECURE'] = True
-        app.config['REMEMBER_COOKIE_SECURE'] = True
-        app.config['SESSION_COOKIE_HTTPONLY'] = True
+    # Disable Flask logging
+    app.logger.disabled = True
     
     # Initialize Flask-Login
     login_manager.init_app(app)
@@ -28,27 +24,21 @@ def create_app():
     app.register_blueprint(main)
     app.register_blueprint(auth)
     
-    # Initialize SocketIO
+    # Initialize SocketIO with minimal logging
     socketio.init_app(app, 
                      async_mode='threading',
                      cors_allowed_origins="*",
                      ping_timeout=5,
-                     ping_interval=25)
+                     ping_interval=25,
+                     logger=False,  # Disable SocketIO logging
+                     engineio_logger=False)  # Disable Engine.IO logging
     
     # Initialize the database
     init_db()
-    
-    if os.environ.get('FLASK_ENV') == 'production':
-        # Configure logging
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/netwatch.log', maxBytes=10240, backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('NetWatch startup')
+
+    # Minimal error handling
+    @app.errorhandler(Exception)
+    def handle_error(error):
+        return str(error), 500
     
     return app 
