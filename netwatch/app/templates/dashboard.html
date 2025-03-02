@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Monitor Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Main Content -->
+        <div class="main-content-full">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="header-title">
+                    <h1><i class="fas fa-network-wired"></i> NetWatch Dashboard</h1>
+                    <span class="subtitle">Real-time System Overview</span>
+                </div>
+                <div class="header-actions">
+                    <span id="connection-status" class="status-badge">
+                        <i class="fas fa-circle"></i> Connected
+                    </span>
+                    <span class="time">{{ datetime.now().strftime('%H:%M:%S') }}</span>
+                    <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </header>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card upload">
+                    <i class="fas fa-upload"></i>
+                    <div class="stat-info">
+                        <h3>Upload Rate</h3>
+                        <span id="bytes-sent" class="stat-value">0 B/s</span>
+                    </div>
+                </div>
+                <div class="stat-card download">
+                    <i class="fas fa-download"></i>
+                    <div class="stat-info">
+                        <h3>Download Rate</h3>
+                        <span id="bytes-recv" class="stat-value">0 B/s</span>
+                    </div>
+                </div>
+                <div class="stat-card cpu">
+                    <i class="fas fa-microchip"></i>
+                    <div class="stat-info">
+                        <h3>CPU Usage</h3>
+                        <span id="cpu-usage" class="stat-value">0%</span>
+                        <div class="progress-bar">
+                            <div id="cpu-progress" class="progress"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card memory">
+                    <i class="fas fa-memory"></i>
+                    <div class="stat-info">
+                        <h3>Memory Usage</h3>
+                        <span id="memory-usage" class="stat-value">0%</span>
+                        <div class="progress-bar">
+                            <div id="memory-progress" class="progress"></div>
+                        </div>
+                        <span id="memory-details" class="stat-details">0 GB / 0 GB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-pie"></i> Packet Distribution</h3>
+                        <div class="card-actions">
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <canvas id="packetChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-chart-area"></i> Network Traffic</h3>
+                        <div class="card-actions">
+                            <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                        </div>
+                    </div>
+                    <canvas id="trafficChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Storage Section -->
+            <div class="storage-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-hdd"></i> Storage Overview</h2>
+                </div>
+                <div id="storage-cards" class="storage-grid"></div>
+                <div class="storage-details-container">
+                    <div id="storage-details"></div>
+                </div>
+            </div>
+
+            <!-- Connections Section -->
+            <div class="connections-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-network-wired"></i> Active Connections</h2>
+                    <div class="section-actions">
+                        <button class="export-btn"><i class="fas fa-download"></i> Export</button>
+                    </div>
+                </div>
+                <div class="connections-container">
+                    <div class="table-container">
+                        <table id="connectionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Local Address</th>
+                                    <th>Remote Address</th>
+                                    <th>Status</th>
+                                    <th>Process</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Section -->
+            <div class="map-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-globe"></i> Connection Locations</h2>
+                </div>
+                <div id="mapContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html> 
