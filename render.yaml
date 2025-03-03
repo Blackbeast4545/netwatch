@@ -2,20 +2,17 @@ services:
   - type: web
     name: netwatch
     env: python
-    buildCommand: |
-      python -m pip install --upgrade pip
-      pip install -e .
-      pip install -r requirements.txt
-    startCommand: |
-      cd /opt/render/project/src && PYTHONPATH=/opt/render/project/src gunicorn --worker-class eventlet -w 1 app:app
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
-      - key: FLASK_APP
-        value: app.py
+      - key: SECRET_KEY
+        value: your-secret-key-here
       - key: FLASK_ENV
         value: production
       - key: PYTHONPATH
-        value: /opt/render/project/src
-      - key: PORT
-        value: 10000 
+        value: .
+      - key: FLASK_APP
+        value: app.py
+    staticPublishPath: ./netwatch/static 
