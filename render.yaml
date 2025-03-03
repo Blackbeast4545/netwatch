@@ -3,13 +3,15 @@ services:
     name: netwatch
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --worker-class eventlet -w 1 run:app
+    startCommand: gunicorn --worker-class eventlet -w 1 wsgi:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
       - key: FLASK_APP
-        value: run.py
+        value: wsgi.py
       - key: FLASK_ENV
         value: production
       - key: WEB_CONCURRENCY
-        value: 1 
+        value: 1
+      - key: PYTHONPATH
+        value: . 
