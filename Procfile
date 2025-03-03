@@ -1,1 +1,1 @@
-web: gunicorn --worker-class eventlet -w 1 --log-level debug --timeout 120 wsgi:app 
+web: gunicorn --worker-class eventlet -w 1 --log-level debug --timeout 120 --keep-alive 65 --worker-connections 1000 wsgi:application 
