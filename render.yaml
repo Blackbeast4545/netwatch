@@ -2,8 +2,12 @@ services:
   - type: web
     name: netwatch
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --worker-class eventlet -w 1 wsgi:app
+    buildCommand: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+      pip install -e .
+    startCommand: |
+      cd /opt/render/project/src && gunicorn --worker-class eventlet -w 1 --chdir /opt/render/project/src "wsgi:app"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
@@ -14,4 +18,6 @@ services:
       - key: WEB_CONCURRENCY
         value: 1
       - key: PYTHONPATH
-        value: . 
+        value: /opt/render/project/src
+      - key: PORT
+        value: 10000 
