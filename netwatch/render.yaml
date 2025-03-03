@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: netwatch
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --worker-class eventlet -w 1 run:app
+    envVars:
+      - key: SECRET_KEY
+        value: your_secret_key
+      - key: FLASK_ENV
+        value: production
+    healthCheckPath: / 

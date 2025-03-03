@@ -20,7 +20,7 @@ Access the live demo at: [https://netwatch-monitor.herokuapp.com](https://netwat
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/netwatch.git
+git clone https://github.com/Blackbeast4545/netwatch.git
 cd netwatch
 ```
 

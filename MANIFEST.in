@@ -1,0 +1,6 @@
+include netwatch/*
+include netwatch/templates/*
+include netwatch/static/*
+recursive-include netwatch *
+recursive-include netwatch/templates *
+recursive-include netwatch/static * 
