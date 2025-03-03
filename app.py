@@ -1,3 +1,6 @@
+import eventlet
+eventlet.monkey_patch()
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 
@@ -5,7 +8,12 @@ app = Flask(__name__,
            template_folder='netwatch/templates',
            static_folder='netwatch/static')
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+
+# Initialize SocketIO with specific configuration
+socketio = SocketIO(app, 
+                   async_mode='eventlet',
+                   cors_allowed_origins="*",
+                   engineio_logger=True)
 
 @app.route('/')
 def index():

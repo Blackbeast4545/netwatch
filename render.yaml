@@ -3,7 +3,7 @@ services:
     name: netwatch
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn --worker-class eventlet -w 1 app:app
+    startCommand: gunicorn --worker-class eventlet -w 1 --log-level debug --timeout 120 app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.11
@@ -15,4 +15,6 @@ services:
         value: .
       - key: FLASK_APP
         value: app.py
+      - key: WEB_CONCURRENCY
+        value: 1
     staticPublishPath: ./netwatch/static 
